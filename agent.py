@@ -29,7 +29,7 @@ import io
 
 ollama_server = "https://c71e5ed4aba7.ngrok-free.app"
 model_id = "gemma3:27b"
-WEATHER_API = "28df0827f992105fb2d12d6c224a9509"
+WEATHER_API = "..."
 
 def get_question():
     API_URL = "https://agents-course-unit4-scoring.hf.space/random-question"
