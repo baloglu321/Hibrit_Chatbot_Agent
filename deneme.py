@@ -103,9 +103,7 @@ if __name__ == "__main__":
     image.save(buffer, format="PNG")
     image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-    url = (
-        "..../api/generate"  # ✅ /api/chat eklendi
-    )
+    url = "..../api/generate"  # ✅ /api/chat eklendi
 
     payload = {
         "model": "gemma3:27b",

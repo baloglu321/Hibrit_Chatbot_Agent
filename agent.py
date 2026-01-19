@@ -31,6 +31,7 @@ ollama_server = "https://c71e5ed4aba7.ngrok-free.app"
 model_id = "gemma3:27b"
 WEATHER_API = "..."
 
+
 def get_question():
     API_URL = "https://agents-course-unit4-scoring.hf.space/random-question"
     response = requests.get(API_URL).json()
@@ -48,13 +49,9 @@ class SearchTool(Tool):
     description = (
         "Use this tool for all general-purpose web searches. "
         "It replaces all other web search tools. "
-        "If the user wants to search the internet, always prefer this tool.")
-    inputs = {
-        "query": {
-            "type": "string",
-            "description": "The info the user wants"
-        }
-    }
+        "If the user wants to search the internet, always prefer this tool."
+    )
+    inputs = {"query": {"type": "string", "description": "The info the user wants"}}
     output_type = "string"
 
     def forward(self, query: str):
@@ -79,7 +76,6 @@ class WeatherInfoTool(Tool):
     output_type = "string"
 
     def forward(self, location: str):
-
         url = f"https://api.weatherstack.com/current?access_key={WEATHER_API}"
         querystring = {"query": location}
         response = requests.get(url, params=querystring)
@@ -95,14 +91,8 @@ class MultiplyTool(Tool):
     name = "multiply"
     description = "Multiply two numbers."
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "first number"
-        },
-        "b": {
-            "type": "number",
-            "description": "second number"
-        },
+        "a": {"type": "number", "description": "first number"},
+        "b": {"type": "number", "description": "second number"},
     }
     output_type = "number"
 
@@ -117,14 +107,8 @@ class AddTool(Tool):
     name = "add_tool"
     description = "add two numbers"
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "first number"
-        },
-        "b": {
-            "type": "number",
-            "description": "second number"
-        },
+        "a": {"type": "number", "description": "first number"},
+        "b": {"type": "number", "description": "second number"},
     }
     output_type = "number"
 
@@ -139,14 +123,8 @@ class SubtractTool(Tool):
     name = "subtract_tool"
     description = "subtract two numbers"
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "first number"
-        },
-        "b": {
-            "type": "number",
-            "description": "second number"
-        },
+        "a": {"type": "number", "description": "first number"},
+        "b": {"type": "number", "description": "second number"},
     }
     output_type = "number"
 
@@ -161,14 +139,8 @@ class DivideTool(Tool):
     name = "divide_tool"
     description = "divide two numbers"
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "first number"
-        },
-        "b": {
-            "type": "number",
-            "description": "second number"
-        },
+        "a": {"type": "number", "description": "first number"},
+        "b": {"type": "number", "description": "second number"},
     }
     output_type = "number"
 
@@ -185,14 +157,8 @@ class PowerTool(Tool):
     name = "power_tool"
     description = "raise a number to a power"
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "number"
-        },
-        "b": {
-            "type": "number",
-            "description": "power"
-        },
+        "a": {"type": "number", "description": "number"},
+        "b": {"type": "number", "description": "power"},
     }
     output_type = "number"
 
@@ -247,14 +213,8 @@ class ModulusTool(Tool):
     name = "modulus_tool"
     description = "calculate the modulus of two numbers"
     inputs = {
-        "a": {
-            "type": "number",
-            "description": "first number"
-        },
-        "b": {
-            "type": "number",
-            "description": "second number"
-        },
+        "a": {"type": "number", "description": "first number"},
+        "b": {"type": "number", "description": "second number"},
     }
     output_type = "number"
 
@@ -275,10 +235,12 @@ class WikiSearchTool(Tool):
         from langchain_community.document_loaders import WikipediaLoader
 
         search_docs = WikipediaLoader(query=query, load_max_docs=2).load()
-        return "\n\n---\n\n".join([
-            f'<Document source="{doc.metadata["source"]}" page="{doc.metadata.get("page", "")}"/>\n{doc.page_content}\n</Document>'
-            for doc in search_docs
-        ])
+        return "\n\n---\n\n".join(
+            [
+                f'<Document source="{doc.metadata["source"]}" page="{doc.metadata.get("page", "")}"/>\n{doc.page_content}\n</Document>'
+                for doc in search_docs
+            ]
+        )
 
 
 class ArxivSearchTool(Tool):
@@ -291,24 +253,28 @@ class ArxivSearchTool(Tool):
         from langchain_community.document_loaders import ArxivLoader
 
         search_docs = ArxivLoader(query=query, load_max_docs=3).load()
-        return "\n\n---\n\n".join([
-            f'<Document source="{doc.metadata.get("source", "unknown")}" page="{doc.metadata.get("page", "")}"/>\n{doc.page_content[:1000]}\n</Document>'
-            for doc in search_docs
-        ])
+        return "\n\n---\n\n".join(
+            [
+                f'<Document source="{doc.metadata.get("source", "unknown")}" page="{doc.metadata.get("page", "")}"/>\n{doc.page_content[:1000]}\n</Document>'
+                for doc in search_docs
+            ]
+        )
 
 
 def download_audio_from_youtube(url, output_path="audio.mp3"):
-    subprocess.run([
-        "yt-dlp",
-        "-f",
-        "bestaudio",
-        "--extract-audio",
-        "--audio-format",
-        "mp3",
-        "-o",
-        output_path,
-        url,
-    ])
+    subprocess.run(
+        [
+            "yt-dlp",
+            "-f",
+            "bestaudio",
+            "--extract-audio",
+            "--audio-format",
+            "mp3",
+            "-o",
+            output_path,
+            url,
+        ]
+    )
 
 
 def download_video_from_youtube(url, output_path="video.mp4"):
@@ -326,8 +292,7 @@ def download_video_from_youtube(url, output_path="video.mp4"):
 
 
 def transcribe_audio_whisper(audio_path):
-    model = whisper.load_model(
-        "base")  # 'tiny', 'base', 'small', 'medium', 'large'
+    model = whisper.load_model("base")  # 'tiny', 'base', 'small', 'medium', 'large'
     result = model.transcribe(audio_path)
     return result["text"]
 
@@ -344,10 +309,7 @@ class TranscriberTool(Tool):
     name = "mp3_transcript"
     description = "Extracts transcript from any voice file using Whisper"
     inputs = {
-        "path": {
-            "type": "string",
-            "description": "Voice path to be transcribed."
-        }
+        "path": {"type": "string", "description": "Voice path to be transcribed."}
     }
     output_type = "string"
 
@@ -358,12 +320,7 @@ class TranscriberTool(Tool):
 class YouTubeTranscriptTool(Tool):
     name = "youtube_transcript"
     description = "Extracts transcript from a YouTube video using Whisper"
-    inputs = {
-        "url": {
-            "type": "string",
-            "description": "Video link to be transcribed."
-        }
-    }
+    inputs = {"url": {"type": "string", "description": "Video link to be transcribed."}}
     output_type = "string"
 
     def forward(self, url: str) -> str:
@@ -376,15 +333,10 @@ class DataProcessingTool(Tool):
     name = "data_processing"
     description = "Process data: parse tables, extract numbers, format text, statistical calculations"
     inputs = {
-        "data": {
-            "type": "string",
-            "description": "Input data to process"
-        },
+        "data": {"type": "string", "description": "Input data to process"},
         "operation": {
-            "type":
-            "string",
-            "description":
-            "Operation: 'extract_numbers', 'parse_table', 'calculate', 'format_text', 'find_pattern'",
+            "type": "string",
+            "description": "Operation: 'extract_numbers', 'parse_table', 'calculate', 'format_text', 'find_pattern'",
         },
         "parameters": {
             "type": "string",
@@ -408,10 +360,7 @@ class DataProcessingTool(Tool):
                 table_data = []
                 for line in lines:
                     if "|" in line:
-                        row = [
-                            cell.strip() for cell in line.split("|")
-                            if cell.strip()
-                        ]
+                        row = [cell.strip() for cell in line.split("|") if cell.strip()]
                         table_data.append(row)
                 return f"Parsed table: {table_data}"
 
@@ -459,20 +408,14 @@ class WebScrapingTool(Tool):
     name = "web_scraping"
     description = "Advanced web scraping: extract specific data from web pages, parse tables, find links"
     inputs = {
-        "url": {
-            "type": "string",
-            "description": "URL to scrape"
-        },
+        "url": {"type": "string", "description": "URL to scrape"},
         "target": {
-            "type":
-            "string",
-            "description":
-            "Target: 'tables', 'links', 'text', 'images', 'specific_element'",
+            "type": "string",
+            "description": "Target: 'tables', 'links', 'text', 'images', 'specific_element'",
         },
         "selector": {
             "type": "string",
-            "description":
-            "CSS selector or XPath for specific elements (optional)",
+            "description": "CSS selector or XPath for specific elements (optional)",
             "nullable": True,
         },
         "filters": {
@@ -483,18 +426,13 @@ class WebScrapingTool(Tool):
     }
     output_type = "string"
 
-    def forward(self,
-                url: str,
-                target: str,
-                selector: str = None,
-                filters: str = None):
+    def forward(self, url: str, target: str, selector: str = None, filters: str = None):
         try:
             import requests
             from bs4 import BeautifulSoup
 
             headers = {
-                "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             }
 
             response = requests.get(url, headers=headers, timeout=10)
@@ -522,8 +460,9 @@ class WebScrapingTool(Tool):
 
             elif target == "links":
                 links = soup.find_all("a", href=True)
-                link_list = [(link.get_text().strip(), link["href"])
-                             for link in links[:20]]
+                link_list = [
+                    (link.get_text().strip(), link["href"]) for link in links[:20]
+                ]
                 return f"Links found: {link_list}"
 
             elif target == "text":
@@ -532,8 +471,9 @@ class WebScrapingTool(Tool):
                     script.decompose()
                 text = soup.get_text()
                 lines = (line.strip() for line in text.splitlines())
-                chunks = (phrase.strip() for line in lines
-                          for phrase in line.split("  "))
+                chunks = (
+                    phrase.strip() for line in lines for phrase in line.split("  ")
+                )
                 text = " ".join(chunk for chunk in chunks if chunk)
                 return text[:2000]  # İlk 2000 karakter
 
@@ -544,8 +484,9 @@ class WebScrapingTool(Tool):
 
             elif target == "images":
                 images = soup.find_all("img", src=True)
-                img_list = [(img.get("alt", "No alt"), img["src"])
-                            for img in images[:10]]
+                img_list = [
+                    (img.get("alt", "No alt"), img["src"]) for img in images[:10]
+                ]
                 return f"Images found: {img_list}"
 
         except Exception as e:
@@ -569,9 +510,9 @@ def caption_image(image_path: str, prompt: str) -> str:
         "images": [image_base64],
         "stream": False,
     }
-    response = requests.post(url,
-                             headers={"Content-Type": "application/json"},
-                             json=payload)
+    response = requests.post(
+        url, headers={"Content-Type": "application/json"}, json=payload
+    )
     response.raise_for_status()  # Hatalı HTTP durum kodu varsa Exception atar
 
     data = response.json()
@@ -592,16 +533,12 @@ class ImageCaptionerTool(Tool):
 
     inputs = {
         "path": {
-            "type":
-            "string",
-            "description":
-            "The local file path of the image to describe (e.g., JPG or PNG).",
+            "type": "string",
+            "description": "The local file path of the image to describe (e.g., JPG or PNG).",
         },
         "text": {
-            "type":
-            "string",
-            "description":
-            "What are you looking for in the image? (e.g. 'How many people are wearing helmets?')",
+            "type": "string",
+            "description": "What are you looking for in the image? (e.g. 'How many people are wearing helmets?')",
         },
     }
     output_type = "string"
@@ -624,12 +561,11 @@ class FileDownloadTool(Tool):
 
     inputs = {
         "task_id": {
-            "type":
-            "string",
-            "description":
-            ("The task_id used to construct the Hugging Face file download URL. "
-             "This ID corresponds to a specific file uploaded to the course environment."
-             ),
+            "type": "string",
+            "description": (
+                "The task_id used to construct the Hugging Face file download URL. "
+                "This ID corresponds to a specific file uploaded to the course environment."
+            ),
         }
     }
     output_type = "string"
@@ -659,15 +595,17 @@ class FileDownloadTool(Tool):
 
             return (
                 f"The file '{filename}' has been downloaded and read as an Excel spreadsheet.\n"
-                f"Here is a preview of its contents:\n\n{df_preview}")
+                f"Here is a preview of its contents:\n\n{df_preview}"
+            )
 
         elif filename.endswith(".json"):
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return f"The file '{filename}' has been downloaded and its content is as follows:\n{json.dumps(data, indent=2)}"
 
-        elif filename.endswith((".png", ".jpg", ".jpeg", ".bmp", ".PNG",
-                                ".JPG", ".JPEG", ".BMP")):
+        elif filename.endswith(
+            (".png", ".jpg", ".jpeg", ".bmp", ".PNG", ".JPG", ".JPEG", ".BMP")
+        ):
             answer = (
                 f"The image file was downloaded successfully. Saved at: {file_path}"
             )
@@ -716,10 +654,8 @@ class YouTubeDownloadTool(Tool):
     )
     inputs = {
         "url": {
-            "type":
-            "string",
-            "description":
-            "The YouTube video URL to download. Returns the path of the downloaded video file.",
+            "type": "string",
+            "description": "The YouTube video URL to download. Returns the path of the downloaded video file.",
         },
     }
     output_type = "string"
@@ -731,18 +667,20 @@ class YouTubeDownloadTool(Tool):
 
 
 def build_agent():
+    # Load API keys from environment variables for security
+    serper_api_key = os.getenv("SERPER_API_KEY")
+    if serper_api_key:
+        os.environ["SERPER_API_KEY"] = serper_api_key
+    else:
+        print("Warning: SERPER_API_KEY not found in environment variables")
     
-    
-    os.environ["SERPER_API_KEY"] = "6172068316a98b8020f03de539f414f8be876895"
     global ollama_server
     global model_id
     try:
         with open("system_prompt.txt", "r", encoding="utf-8") as f:
             system_prompt = f.read()
     except FileNotFoundError:
-        print(
-            "system_prompt.txt dosyası bulunamadı, varsayılan prompt kullanılacak."
-        )
+        print("system_prompt.txt dosyası bulunamadı, varsayılan prompt kullanılacak.")
         system_prompt = "You are a helpful assistant tasked with answering questions using a set of tools. Now, I will ask you a question. Report your thoughts, and finish your answer with the following template: FINAL ANSWER: [YOUR FINAL ANSWER]. YOUR FINAL ANSWER should be a number OR as few words as possible OR a comma separated list of numbers and/or strings. If you are asked for a number, don't use comma to write your number neither use units such as $ or percent sign unless specified otherwise. If you are asked for a string, don't use articles, neither abbreviations (e.g. for cities), and write the digits in plain text unless specified otherwise. If you are asked for a comma separated list, apply the above rules depending of whether the element to be put in the list is a number or a string.Your answer should only start with 'FINAL ANSWER: ', then follows with the answer. "
     except Exception as e:
         print(f"system_prompt.txt okunurken hata oluştu: {e}")
@@ -830,7 +768,6 @@ def build_agent():
 
 
 def tool_test():
-
     tool_tests = {
         "multiply": lambda tool: tool(a=5, b=3),  # 15
         "add_tool": lambda tool: tool(a=7, b=2),  # 9

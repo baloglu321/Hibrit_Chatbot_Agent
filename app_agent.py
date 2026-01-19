@@ -13,7 +13,6 @@ DEFAULT_API_URL = "https://agents-course-unit4-scoring.hf.space"
 # --- Basic Agent Definition ---
 # ----- THIS IS WERE YOU CAN BUILD WHAT YOU WANT ------
 class BasicAgent:
-
     def __init__(self):
         print("BasicAgent initialized.")
         self.agent = build_agent()
@@ -34,8 +33,7 @@ def run_and_submit_all(profile: gr.OAuthProfile | None):
     and displays the results.
     """
     # --- Determine HF Space Runtime URL and Repo URL ---
-    space_id = os.getenv(
-        "SPACE_ID")  # Get the SPACE_ID for sending link to the code
+    space_id = os.getenv("SPACE_ID")  # Get the SPACE_ID for sending link to the code
 
     if profile:
         username = f"{profile.username}"
@@ -91,27 +89,29 @@ def run_and_submit_all(profile: gr.OAuthProfile | None):
             continue
         try:
             submitted_answer = agent(question_text + "task id :" + task_id)
-            answers_payload.append({
-                "task_id": task_id,
-                "submitted_answer": submitted_answer
-            })
-            results_log.append({
-                "Task ID": task_id,
-                "Question": question_text,
-                "Submitted Answer": submitted_answer,
-            })
+            answers_payload.append(
+                {"task_id": task_id, "submitted_answer": submitted_answer}
+            )
+            results_log.append(
+                {
+                    "Task ID": task_id,
+                    "Question": question_text,
+                    "Submitted Answer": submitted_answer,
+                }
+            )
         except Exception as e:
             print(f"Error running agent on task {task_id}: {e}")
-            results_log.append({
-                "Task ID": task_id,
-                "Question": question_text,
-                "Submitted Answer": f"AGENT ERROR: {e}",
-            })
+            results_log.append(
+                {
+                    "Task ID": task_id,
+                    "Question": question_text,
+                    "Submitted Answer": f"AGENT ERROR: {e}",
+                }
+            )
 
     if not answers_payload:
         print("Agent did not produce any answers to submit.")
-        return "Agent did not produce any answers to submit.", pd.DataFrame(
-            results_log)
+        return "Agent did not produce any answers to submit.", pd.DataFrame(results_log)
 
     # 4. Prepare Submission
     submission_data = {
@@ -133,7 +133,8 @@ def run_and_submit_all(profile: gr.OAuthProfile | None):
             f"User: {result_data.get('username')}\n"
             f"Overall Score: {result_data.get('score', 'N/A')}% "
             f"({result_data.get('correct_count', '?')}/{result_data.get('total_attempted', '?')} correct)\n"
-            f"Message: {result_data.get('message', 'No message received.')}")
+            f"Message: {result_data.get('message', 'No message received.')}"
+        )
         print("Submission successful.")
         results_df = pd.DataFrame(results_log)
         return final_status, results_df
@@ -168,7 +169,8 @@ def run_and_submit_all(profile: gr.OAuthProfile | None):
 # --- Build Gradio Interface using Blocks ---
 with gr.Blocks() as demo:
     gr.Markdown("# Basic Agent Evaluation Runner")
-    gr.Markdown("""
+    gr.Markdown(
+        """
         **Instructions:**
 
         1.  Please clone this space, then modify the code to define your agent's logic, the tools, the necessary packages, etc ...
@@ -179,21 +181,20 @@ with gr.Blocks() as demo:
         **Disclaimers:**
         Once clicking on the "submit button, it can take quite some time ( this is the time for the agent to go through all the questions).
         This space provides a basic setup and is intentionally sub-optimal to encourage you to develop your own, more robust solution. For instance for the delay process of the submit button, a solution could be to cache the answers and submit in a seperate action or even to answer the questions in async.
-        """)
+        """
+    )
 
     gr.LoginButton()
 
     run_button = gr.Button("Run Evaluation & Submit All Answers")
 
-    status_output = gr.Textbox(label="Run Status / Submission Result",
-                               lines=5,
-                               interactive=False)
+    status_output = gr.Textbox(
+        label="Run Status / Submission Result", lines=5, interactive=False
+    )
     # Removed max_rows=10 from DataFrame constructor
-    results_table = gr.DataFrame(label="Questions and Agent Answers",
-                                 wrap=True)
+    results_table = gr.DataFrame(label="Questions and Agent Answers", wrap=True)
 
-    run_button.click(fn=run_and_submit_all,
-                     outputs=[status_output, results_table])
+    run_button.click(fn=run_and_submit_all, outputs=[status_output, results_table])
 
 if __name__ == "__main__":
     print("\n" + "-" * 30 + " App Starting " + "-" * 30)
@@ -203,12 +204,9 @@ if __name__ == "__main__":
 
     if space_host_startup:
         print(f"✅ SPACE_HOST found: {space_host_startup}")
-        print(
-            f"   Runtime URL should be: https://{space_host_startup}.hf.space")
+        print(f"   Runtime URL should be: https://{space_host_startup}.hf.space")
     else:
-        print(
-            "ℹ️  SPACE_HOST environment variable not found (running locally?)."
-        )
+        print("ℹ️  SPACE_HOST environment variable not found (running locally?).")
 
     if space_id_startup:  # Print repo URLs if SPACE_ID is found
         print(f"✅ SPACE_ID found: {space_id_startup}")
